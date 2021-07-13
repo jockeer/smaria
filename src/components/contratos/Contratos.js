@@ -1,11 +1,24 @@
 import React from 'react';
-const Contratos = ({contratos,setAccion,setContSelect}) => {
+import axios from 'axios'
+import swal from 'sweetalert'
+const Contratos = ({contratos,setAccion,setContSelect, cargarDatos}) => {
 
     const seleccionar = async (contrato)=>{
 
         await setContSelect(contrato)
         await setAccion(3);
     }
+
+     const deletedContrato = async(id)=>{
+        await axios.put(`http://localhost:4000/v1/contrato/delete/${id}`)
+        .then(function (response) {
+            swal("Eliminado!", "El contrato fue Eliminado correctamente", "success");    
+            cargarDatos();
+        })
+        .catch(function (error) {
+            swal("Error!", "El contrato no fue Eliminado", "error");    
+          }); 
+     }
     return ( 
         <table className="table">
             <thead>
@@ -23,13 +36,14 @@ const Contratos = ({contratos,setAccion,setContSelect}) => {
                     (contratos.map((contrato,index) => {
                         return <tr key={contrato.id}>
                                     <td>{index+1}</td>
-                                    <td>{contrato.fechaini}</td>
-                                    <td>{contrato.fechafin}</td>
-                                    <td>{contrato.dependientes}</td>
-                                    <td>{(contrato.tipo=='1')?'Plan Basico' : (contrato.tipo == '2') ? 'Plan Medio': 'Plan Superior'}</td>
+                                    
+                                    <td>{(contrato.fechaInicio == null) ? null: contrato.fechaInicio.substr(0,10)}</td>
+                                    <td>{(contrato.fechaFin == null ) ? null : contrato.fechaFin.substr(0,10)}</td>
+                                    <td>{contrato.cantidadDependientes}</td>
+                                    <td>{(contrato.idPlan=='5')?'Plan Basico' : (contrato.idPlan == '15') ? 'Plan Medio': 'Plan Superior'}</td>
                                     <td>
                                         <button onClick={()=>seleccionar(contrato)} className="btn btn-info">Editar</button>
-                                        <button className="btn btn-danger">Eliminar</button>
+                                        <button onClick={()=>deletedContrato(contrato.id)} className="btn btn-danger">Eliminar</button>
                                     </td>
                                 </tr>
                     }))

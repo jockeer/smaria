@@ -3,39 +3,44 @@ import Mensaje from '../layouts/Mensaje';
 import axios from 'axios';
 import swal from 'sweetalert';
 
-const FormContratos = ({setAccion}) => {
+const FormContratos = ({setAccion, cargarDatos}) => {
 
     const [ contrato, setContrato] = useState({
-        tipo:"",
-        cantidad:"",
-        fechaIni:"",
-        fechaFin:""
+        fechaInicio: "",
+        fechaFin: "",
+        cantidadDependientes: '',
+        idPlan: ''
     })
 
     const [ error, setError]= useState(false);
 
-    const {tipo, cantidad,fechaIni,fechaFin} = contrato;
+    const {fechaInicio, fechaFin,cantidadDependientes,idPlan} = contrato;
 
     const onSubmit = async (e)=>{
         e.preventDefault();
 
-        if(tipo.trim()==='' || tipo.trim()==='0' || cantidad.trim()==='' || fechaFin.trim()===''||fechaIni.trim()===''){
+        if(idPlan.trim()==='' || idPlan.trim()==='0' || cantidadDependientes.trim()==='' || fechaFin.trim()===''||fechaInicio.trim()===''){
             setError(true);
             return
         }
         setError(false);
 
-        //const api = `url`;
-        //
-        //const resp = await axios.post(api,data);
-
-        swal("Registrado!", "El contrato fue registrado correctamente", "success");
-
-        setAccion(1);
-        // swal("Registrado!", "El contrato fue registrado correctamente", "error");
-
         
+        await axios.post(`http://localhost:4000/v1/contrato/request/`,{
+            fechaInicio: fechaInicio,
+            fechaFin: fechaFin,
+            cantidadDependientes: cantidadDependientes,
+            idPlan: parseInt(idPlan)
 
+        }).then(function (response) {
+            swal("Registrado!", "El contrato fue registrado correctamente", "success");    
+            setAccion(1);
+            cargarDatos();
+        })
+        .catch(function (error) {
+            swal("Error!", "El contrato no fue registrado", "error");    
+
+          }); 
     }
     const onchange = e => {
         setContrato({
@@ -55,24 +60,24 @@ const FormContratos = ({setAccion}) => {
             <hr />
             <div className="form-group col-10">
                 <label htmlFor="">Tipo de contrato</label>
-                <select className="form-control" name="tipo" value={tipo} onChange={onchange}>
+                <select className="form-control" name="idPlan" value={idPlan} onChange={onchange}>
                     <option value="0">Seleccione...</option>
-                    <option value="1">Plan Basico</option>
-                    <option value="2">Plan Medio</option>
-                    <option value="3">Plan Superior</option>
+                    <option value="5">Plan Basico</option>
+                    <option value="15">Plan Medio</option>
+                    <option value="25">Plan Superior</option>
                 </select>
             </div>
             <br />
             <div className="form-group col-10">
                 <label htmlFor="">Cantidad de dependientes</label>
-                <input type="number" className="form-control" name="cantidad" value={cantidad} min="0" onChange={onchange}/>
+                <input type="number" className="form-control" name="cantidadDependientes" value={cantidadDependientes} min="0" onChange={onchange}/>
                 
             </div>
             <br />
             <div className="row">
                 <div className="form-group col-6">
                     <label htmlFor="">Fecha de inicio</label>
-                    <input type="date" className="form-control" min="0" name="fechaIni" value={fechaIni} onChange={onchange}/>  
+                    <input type="date" className="form-control" min="0" name="fechaInicio" value={fechaInicio} onChange={onchange}/>  
                 </div>
                 <div className="form-group col-6">
                     <label htmlFor="">Fecha Fin</label>

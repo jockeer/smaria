@@ -6,19 +6,28 @@ import SideBar from '../layouts/SideBar';
 import FormContratos from '../contratos/FormContratos';
 import FormEditContrato from '../contratos/FormEditContrato';
 
+import axios from 'axios'
+
 const Contrato = () => {
 
     const [ accion, setAccion ] = useState(1);
-    const [ contratos, setContratos ] = useState([
-        {id:1,fechaini:'2021-07-01', fechafin:'2021-07-20', dependientes:20, tipo:'1'},
-        {id:2,fechaini:'2021-07-01', fechafin:'2021-07-20', dependientes:10, tipo:'2'},
-        {id:3,fechaini:'2021-07-01', fechafin:'2021-07-20', dependientes:30, tipo:'3'},
-        {id:4,fechaini:'2021-07-01', fechafin:'2021-07-20', dependientes:40, tipo:'2'},
-        {id:5,fechaini:'2021-07-01', fechafin:'2021-07-20', dependientes:60, tipo:'3'}
-    ])
+    const [ contratos, setContratos ] = useState([])
     const [ contSelect, setContSelect] = useState();
     const agregar = ()=>{
         setAccion(2);
+    }
+
+    useEffect(() => {
+        const cargarContratos = async () =>{
+            const api = await axios.get(`http://localhost:4000/v1/contrato`);
+            setContratos(api.data.data)
+        }
+        cargarContratos()
+    }, [setAccion])
+
+    const cargarDatos = async ()=>{
+        const api = await axios.get(`http://localhost:4000/v1/contrato`);
+            setContratos(api.data.data)
     }
 
 
@@ -34,11 +43,11 @@ const Contrato = () => {
                 <p className="m-3"><span><button onClick={agregar} className="me-2 button_add_contrato">+</button></span><i><small>Agregar contrato</small></i> </p>
                     {
                         (accion === 1)
-                        ?<Contratos contratos={contratos} setAccion={setAccion} setContSelect={setContSelect}/>
+                        ?<Contratos contratos={contratos} setAccion={setAccion} setContSelect={setContSelect} cargarDatos={cargarDatos}/>
                         : (accion === 2)
-                            ?<FormContratos setAccion={setAccion}/>
+                            ?<FormContratos setAccion={setAccion} cargarDatos={cargarDatos}/>
                             :(accion === 3)
-                                ?<FormEditContrato setAccion={setAccion} contSelect={contSelect}/>
+                                ?<FormEditContrato setAccion={setAccion} contSelect={contSelect} cargarDatos={cargarDatos}/>
                                 :null
                     }
                     

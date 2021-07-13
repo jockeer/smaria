@@ -4,17 +4,19 @@ import axios from 'axios';
 import swal from 'sweetalert';
 
 
-const FormEditContrato = ({setAccion, contSelect}) => {
+const FormEditContrato = ({setAccion, contSelect, cargarDatos}) => {
     const [ contrato, setContrato] = useState({
-        id:"",
-        tipo:"",
-        dependientes:"",
-        fechaini:"",
-        fechafin:""
+        id: '',
+        fechaInicio: '', 
+        fechaFin: '',
+        cantidadDependientes: '',
+        cuotasPendientes:'',
+        plan:'',
+        idPlan: ''
     })
 
     const [ error, setError]= useState(false);
-    const {tipo, dependientes,fechaini,fechafin} = contrato;
+    const {id,idPlan, cantidadDependientes,fechaInicio,fechaFin} = contrato;
 
     useEffect(() => {
         const cargarDatos = async() =>{
@@ -26,7 +28,7 @@ const FormEditContrato = ({setAccion, contSelect}) => {
     const onSubmits = async (e)=>{
         e.preventDefault();
 
-        if(tipo.trim()==='' || tipo.trim()==='0' || dependientes.trim()==='' || fechafin.trim()===''||fechaini.trim()===''){
+        if(idPlan==='' || idPlan==='0' || cantidadDependientes.toString().trim()==='' || fechaFin.trim()===''||fechaInicio.trim()===''){
             setError(true);
             return
         }
@@ -34,12 +36,23 @@ const FormEditContrato = ({setAccion, contSelect}) => {
 
         //const api = `url`;
         //
-        //const resp = await axios.post(api,data);
+        await axios.put(`http://localhost:4000/v1/contrato/update/${id}`,{
+            fechaInicio: fechaInicio.substr(0,10),
+            fechaFin: fechaFin.substr(0,10),
+            cantidadDependientes: cantidadDependientes,
+            idPlan: parseInt(idPlan)
 
-        swal("Registrado!", "El contrato fue registrado correctamente", "success");
+        }).then(function (response) {
+            swal("Actualizado!", "El contrato fue Actualizado correctamente", "success");    
+            setAccion(1);
+            cargarDatos();
+        })
+        .catch(function (error) {
+            swal("Error!", "El contrato no fue Actualizado", "error");    
 
-        setAccion(1);
-        // swal("Registrado!", "El contrato fue registrado correctamente", "error");
+          }); 
+
+
 
         
 
@@ -62,28 +75,28 @@ const FormEditContrato = ({setAccion, contSelect}) => {
             <hr />
             <div className="form-group col-10">
                 <label htmlFor="">Tipo de contrato</label>
-                <select className="form-control" name="tipo" value={tipo} onChange={onchanges}>
+                <select className="form-control" name="idPlan" value={idPlan.toString()} onChange={onchanges}>
                     <option value="0">Seleccione...</option>
-                    <option value="1">Plan Basico</option>
-                    <option value="2">Plan Medio</option>
-                    <option value="3">Plan Superior</option>
+                    <option value="5">Plan Basico</option>
+                    <option value="15">Plan Medio</option>
+                    <option value="25">Plan Superior</option>
                 </select>
             </div>
             <br />
             <div className="form-group col-10">
                 <label htmlFor="">Cantidad de dependientes</label>
-                <input type="number" className="form-control" name="dependientes" value={dependientes} min="0" onChange={onchanges}/>
+                <input type="number" className="form-control" name="cantidadDependientes" value={cantidadDependientes} min="0" onChange={onchanges}/>
                 
             </div>
             <br />
             <div className="row">
                 <div className="form-group col-6">
                     <label htmlFor="">Fecha de inicio</label>
-                    <input type="date" className="form-control" min="0" name="fechaIni" value={fechaini} onChange={onchanges}/>  
+                    <input type="date" className="form-control" min="0" name="fechaInicio" value={fechaInicio.substr(0,10)} onChange={onchanges}/>  
                 </div>
                 <div className="form-group col-6">
                     <label htmlFor="">Fecha Fin</label>
-                    <input type="date" className="form-control" min="0" name="fechaFin" value={fechafin} onChange={onchanges}/>
+                    <input type="date" className="form-control" min="0" name="fechaFin" value={fechaFin.substr(0,10)} onChange={onchanges}/>
                 </div>
             </div>
             <br />
