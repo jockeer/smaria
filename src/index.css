@@ -9,9 +9,12 @@
   --menu: #0D1117;
   --texto: #000000;
 }
+body{
+  overflow-x: hidden;
+}
 .container_app{
   width: 100vw;
-  height: 100vh;
+  /* height: 100vh; */
   min-height: 100vh;
   background: #F8F9FA;
   display: flex;
@@ -19,7 +22,6 @@
 
 .sidebar{
   width: 15vw;
-  height: 100%;
   background-color: var(--menu);
   
 }
@@ -107,4 +109,8 @@ header .titulo_header{
   position: absolute;
   top: 5px;
   right: 5px;
+}
+label{
+  font-size: 0.85rem;
+  font-weight: bold;
 }

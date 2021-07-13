@@ -23,7 +23,7 @@ const FormEditContrato = ({setAccion, contSelect, cargarDatos}) => {
             await setContrato(contSelect)
         }
         cargarDatos()
-    }, [])
+    }, [contSelect])
 
     const onSubmits = async (e)=>{
         e.preventDefault();

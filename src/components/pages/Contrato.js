@@ -40,7 +40,7 @@ const Contrato = () => {
                 
                 
                 <div className="container">
-                <p className="m-3"><span><button onClick={agregar} className="me-2 button_add_contrato">+</button></span><i><small>Agregar contrato</small></i> </p>
+                    <p className="m-3"><span><button onClick={agregar} className="me-2 button_add_contrato">+</button></span><i><small>Agregar contrato</small></i> </p>
                     {
                         (accion === 1)
                         ?<Contratos contratos={contratos} setAccion={setAccion} setContSelect={setContSelect} cargarDatos={cargarDatos}/>

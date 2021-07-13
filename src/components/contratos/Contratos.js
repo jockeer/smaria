@@ -40,7 +40,7 @@ const Contratos = ({contratos,setAccion,setContSelect, cargarDatos}) => {
                                     <td>{(contrato.fechaInicio == null) ? null: contrato.fechaInicio.substr(0,10)}</td>
                                     <td>{(contrato.fechaFin == null ) ? null : contrato.fechaFin.substr(0,10)}</td>
                                     <td>{contrato.cantidadDependientes}</td>
-                                    <td>{(contrato.idPlan=='5')?'Plan Basico' : (contrato.idPlan == '15') ? 'Plan Medio': 'Plan Superior'}</td>
+                                    <td>{(contrato.idPlan==='5')?'Plan Basico' : (contrato.idPlan ==='15') ? 'Plan Medio': 'Plan Superior'}</td>
                                     <td>
                                         <button onClick={()=>seleccionar(contrato)} className="btn btn-info">Editar</button>
                                         <button onClick={()=>deletedContrato(contrato.id)} className="btn btn-danger">Eliminar</button>
