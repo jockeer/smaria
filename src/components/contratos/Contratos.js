@@ -1,7 +1,13 @@
 import React from 'react';
-const Contratos = ({contratos}) => {
+const Contratos = ({contratos,setAccion,setContSelect}) => {
+
+    const seleccionar = async (contrato)=>{
+
+        await setContSelect(contrato)
+        await setAccion(3);
+    }
     return ( 
-        <table class="table">
+        <table className="table">
             <thead>
                 <tr>
                 <th scope="col">#</th>
@@ -14,15 +20,15 @@ const Contratos = ({contratos}) => {
             </thead>
             <tbody>
                 {
-                    (contratos.forEach(contrato => {
-                        return <tr>
-                                    <td>1</td>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                    <td>@mdo</td>
+                    (contratos.map((contrato,index) => {
+                        return <tr key={contrato.id}>
+                                    <td>{index+1}</td>
+                                    <td>{contrato.fechaini}</td>
+                                    <td>{contrato.fechafin}</td>
+                                    <td>{contrato.dependientes}</td>
+                                    <td>{(contrato.tipo=='1')?'Plan Basico' : (contrato.tipo == '2') ? 'Plan Medio': 'Plan Superior'}</td>
                                     <td>
-                                        <button className="btn btn-info">Editar</button>
+                                        <button onClick={()=>seleccionar(contrato)} className="btn btn-info">Editar</button>
                                         <button className="btn btn-danger">Eliminar</button>
                                     </td>
                                 </tr>

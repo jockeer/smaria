@@ -82,6 +82,7 @@ header .titulo_header{
   background: #fff;
   border-radius: 8px;
   padding: 20px;
+  position: relative;
 }
 .form_contrato small{
   color: rgb(171, 171, 171);
@@ -94,4 +95,16 @@ header .titulo_header{
   color: #fff;
   border: none;
   background: green;
+}
+.cerrar_form{
+  width: 25px;
+  height: 25px;
+  background: red;
+  color: white;
+  border: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
