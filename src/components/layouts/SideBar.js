@@ -32,7 +32,7 @@ const SideBar = () => {
                     </li>
                 </NavLink>
                 <hr />
-                <NavLink exact to="/pago" activeClassName="selected">
+                <NavLink exact to="/reporte" activeClassName="selected">
                     <li>
                         <FaBook/><span className="ms-2">Reportes</span>
                     </li>

@@ -69,7 +69,7 @@ const FormAsegurados = ({setAccion, cargarDatos}) => {
 
 
         }).then(function (response) {
-            if (response.data.errCode==='') {
+            if (response.data.errCode!=='') {
                 
                 swal('Error!', `${response.data.errMsg}`, "error")
                 return
