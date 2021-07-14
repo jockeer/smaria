@@ -8,16 +8,15 @@ const FormEditAsegurado = ({setAccion, contSelect, cargarDatos}) => {
 
     
     const [ asegurado, setContrato] = useState({
-        id:'',
         ci:'',
         nombre:'',
         apellidoPaterno:'',
         apellidoMaterno:'',
-        idCiudad:'',
-        telefono:'',
-        email:'',
         fechaNacimiento:'',
-        idContrato:'',
+        telefono:'',
+        contrato:'',
+        idCiudad:'',
+        email:'',
         titular:'',
         descripcion:''
     })
@@ -26,18 +25,18 @@ const FormEditAsegurado = ({setAccion, contSelect, cargarDatos}) => {
     const [ contratos, setContratos ] = useState([])
 
     const [ error, setError]= useState(false);
-    const {id, ci, nombre, apellidoPaterno,apellidoMaterno,idCiudad,telefono,email,fechaNacimiento,idContrato,titular,descripcion} = asegurado;
+    const {ci, nombre, apellidoPaterno,apellidoMaterno,idCiudad,telefono,email,fechaNacimiento,contrato,titular,descripcion} = asegurado;
 
     useEffect(() => {
         const cargarCiudades = async () => {
 
-            const [ciudades, contratos] = await Promise.all([
+            const [ciudades, contratosa] = await Promise.all([
                 axios(`http://localhost:4000/v1/ciudad`),
                 axios(`http://localhost:4000/v1/contrato`)
 
             ])
             setCiudades(ciudades.data.data)
-            setContratos(contratos.data.data)
+            setContratos(contratosa.data.data)
         }
         cargarCiudades();
         const cargarDatos = async() =>{
@@ -49,7 +48,7 @@ const FormEditAsegurado = ({setAccion, contSelect, cargarDatos}) => {
     const onSubmit = async (e)=>{
         e.preventDefault();
 
-        if(ci.trim()===''||nombre.trim()===''||apellidoPaterno.trim()===''||apellidoMaterno.trim()===''||idCiudad.trim()===''||idCiudad.trim()==='0'||telefono.trim()===''||fechaNacimiento.trim()===''||idContrato.trim()===''||titular.trim()===''||descripcion.trim()===''){
+        if(ci.trim()===''||nombre.trim()===''||apellidoPaterno.trim()===''||apellidoMaterno.trim()===''||idCiudad.toString().trim()===''||idCiudad.toString().trim()==='0'||telefono.toString().trim()===''||fechaNacimiento.trim()===''||contrato.toString().trim()===''||titular.toString().trim()===''||descripcion.trim()===''){
             setError(true);
             return
         }
@@ -57,8 +56,7 @@ const FormEditAsegurado = ({setAccion, contSelect, cargarDatos}) => {
 
         //const api = `url`;
         //
-        await axios.put(`http://localhost:4000/v1/contrato/update/${id}`,{
-            ci:ci,
+        await axios.put(`http://localhost:4000/v1/asegurado/update/${ci}`,{
             nombre: nombre,
             apellidoPaterno,
             apellidoMaterno,
@@ -66,8 +64,7 @@ const FormEditAsegurado = ({setAccion, contSelect, cargarDatos}) => {
             telefono,
             email,
             fechaNacimiento,
-            idContrato:parseInt(idContrato),
-            titular:parseInt(titular),
+            idContrato:parseInt(contrato),
             descripcion
 
         }).then(function (response) {
@@ -121,7 +118,7 @@ const FormEditAsegurado = ({setAccion, contSelect, cargarDatos}) => {
             <div className="row">
                 <div className="form-group col-6">
                     <label htmlFor="">Carnet de identidad</label>
-                    <input type="text" className="form-control" min="0" name="ci" value={ci} onChange={onchange}/>  
+                    <input type="text" className="form-control" min="0" name="ci" value={ci} onChange={onchange} disabled/>  
                 </div>
                 <div className="form-group col-6">
                     <label htmlFor="">Telefono</label>
@@ -151,29 +148,19 @@ const FormEditAsegurado = ({setAccion, contSelect, cargarDatos}) => {
             <div className="row">
                 <div className="form-group col-6">
                     <label htmlFor="">Contrato</label>
-                    <select className="form-control" name="idContrato" value={idContrato?.toString()} onChange={onchange}>
+                    <select className="form-control" name="contrato" value={contrato} onChange={onchange} disabled>
                     <option value="0">Seleccione su contrato...</option>
                     {
-                        contratos.map((contrato)=>{
-                            return <option key={contrato.id} value={`${contrato.id}`}>{contrato.plan} - {contrato.cantidadDependientes}</option>
+                        contratos.map((contrat)=>{
+                            console.log(contrat);
+                            return <option key={contrat.id} value={`${contrat.id}`}>{contrat.plan} - {contrat.cantidadDependientes}</option>
                         })
                     }
                 </select>
                 </div>
                 <div className="form-group col-6">
                     <label htmlFor="">Titular</label>
-                    <div className="form-check">
-                        <input className="form-check-input" type="radio" name="titular" value="1" id="flexRadioDefault1" onChange={onchange}/>
-                        <label className="form-check-label" htmlFor="flexRadioDefault1">
-                            Si
-                        </label>
-                        </div>
-                        <div className="form-check">
-                        <input className="form-check-input" type="radio" name="titular" value="2" id="flexRadioDefault2" onChange={onchange}/>
-                        <label className="form-check-label" htmlFor="flexRadioDefault2">
-                            No
-                        </label>
-                    </div>
+                    <input type="text" name="titular" className="form-control" value={titular}  disabled/>
                 </div>
             </div>
             <br />

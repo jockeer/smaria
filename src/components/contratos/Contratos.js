@@ -10,14 +10,31 @@ const Contratos = ({contratos,setAccion,setContSelect, cargarDatos}) => {
     }
 
      const deletedContrato = async(id)=>{
-        await axios.put(`http://localhost:4000/v1/contrato/delete/${id}`)
-        .then(function (response) {
-            swal("Eliminado!", "El contrato fue Eliminado correctamente", "success");    
-            cargarDatos();
-        })
-        .catch(function (error) {
-            swal("Error!", "El contrato no fue Eliminado", "error");    
-          }); 
+
+        swal({
+            title: 'Advertencia',
+            text: 'Tambien se daran de baja los asegurados con este Contrato',
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then(async (willDelete) => {
+            if (willDelete) {
+                await axios.put(`http://localhost:4000/v1/contrato/delete/${ parseInt(id)}`)
+                .then(function (response) {
+
+                    swal("Eliminado!", "El contrato fue Eliminado correctamente", "success");    
+                    cargarDatos();
+                })
+                .catch(function (error) {
+                    swal("Error!", "El contrato no fue Eliminado", "error");    
+                }); 
+              
+            } else {
+
+            }
+          });
+        
      }
     return ( 
         <table className="table">
@@ -35,12 +52,12 @@ const Contratos = ({contratos,setAccion,setContSelect, cargarDatos}) => {
                 {
                     (contratos.map((contrato,index) => {
                         return <tr key={contrato.id}>
-                                    <td>{index+1}</td>
+                                    <td>{contrato.id}</td>
                                     
                                     <td>{(contrato.fechaInicio == null) ? null: contrato.fechaInicio.substr(0,10)}</td>
                                     <td>{(contrato.fechaFin == null ) ? null : contrato.fechaFin.substr(0,10)}</td>
                                     <td>{contrato.cantidadDependientes}</td>
-                                    <td>{(contrato.idPlan==='5')?'Plan Basico' : (contrato.idPlan ==='15') ? 'Plan Medio': 'Plan Superior'}</td>
+                                    <td>{(contrato.idPlan===5)?'Plan Basico' : (contrato.idPlan ===15) ? 'Plan Medio': 'Plan Superior'}</td>
                                     <td>
                                         <button onClick={()=>seleccionar(contrato)} className="btn btn-info">Editar</button>
                                         <button onClick={()=>deletedContrato(contrato.id)} className="btn btn-danger">Eliminar</button>

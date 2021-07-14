@@ -19,18 +19,27 @@ const Asegurados = ({asegurados,setAccion,setContSelect, cargarDatos}) => {
           })
           .then(async (willDelete) => {
             if (willDelete) {
-                await axios.put(`http://localhost:4000/v1/contrato/delete/${asegurado.id}`)
+                (asegurado.titular===1)
+                ?await axios.put(`http://localhost:4000/v1/asegurado/deleteTitular/${asegurado.contrato}`)
                 .then(function (response) {
-                    (asegurado.titular===1)?swal("Eliminado!", "El Titular fue Eliminado correctamente", "success"):swal("Eliminado!", "El Asegurado fue Eliminado correctamente", "success"); 
+                    swal("Eliminado!", "El Titular fue Eliminado correctamente", "success")
+       
+                })
+                .catch(function (error) {
+                    swal("Error!", "El contrato no fue Eliminado", "error");    
+                })
+                :await axios.put(`http://localhost:4000/v1/asegurado/deleteDependiente/${asegurado.ci}/${asegurado.contrato}`)
+                .then(function (response) {
+                    swal("Eliminado!", "El Asegurado fue Eliminado correctamente", "success");
                        
-                    cargarDatos();
                 })
                 .catch(function (error) {
                     swal("Error!", "El contrato no fue Eliminado", "error");    
                 }); 
+                cargarDatos();
               
             } else {
-
+                swal("Eliminado!", "error", "error")
             }
           });
 

@@ -69,6 +69,13 @@ const FormAsegurados = ({setAccion, cargarDatos}) => {
 
 
         }).then(function (response) {
+            if (response.data.errCode==='') {
+                
+                swal('Error!', `${response.data.errMsg}`, "error")
+                return
+            }
+            
+
             swal("Registrado!", "El asegurado fue registrado correctamente", "success");    
             setAccion(1);
             cargarDatos();
@@ -148,7 +155,7 @@ const FormAsegurados = ({setAccion, cargarDatos}) => {
                     <option value="0">Seleccione su contrato...</option>
                     {
                         contratos.map((contrato)=>{
-                            return <option key={contrato.id} value={`${contrato.id}`}>{contrato.plan} - {contrato.cantidadDependientes}</option>
+                            return <option key={contrato.id} value={`${contrato.id}`}> {contrato.id}- {contrato.plan} - {contrato.cantidadDependientes}</option>
                         })
                     }
                 </select>
@@ -162,7 +169,7 @@ const FormAsegurados = ({setAccion, cargarDatos}) => {
                         </label>
                         </div>
                         <div className="form-check">
-                        <input className="form-check-input" type="radio" name="titular" value="2" id="flexRadioDefault2" onChange={onchange}/>
+                        <input className="form-check-input" type="radio" name="titular" value="0" id="flexRadioDefault2" onChange={onchange}/>
                         <label className="form-check-label" htmlFor="flexRadioDefault2">
                             No
                         </label>
