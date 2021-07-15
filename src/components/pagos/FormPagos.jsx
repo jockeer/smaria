@@ -12,11 +12,15 @@ const FormPagos = ({setAccion, cargarDatos}) => {
 
     })
 
+    const [ montoTotal , setMontoTotal] = useState(0);
+    const [idContrato, setIDContrato] = useState('0');
+    const [cuotasPagadas, setCuotasPagadas ] = useState(1);
+
+    const [ montoPlan , setMontoPlan] = useState(0);
+
     const [ contratos, setContratos ] = useState([])
 
     const [ error, setError]= useState(false);
-
-    const {montoTotal, idContrato,cuotasPagadas} = pago;
 
     useEffect(() => {
         const cargarContratos = async () => {
@@ -31,7 +35,7 @@ const FormPagos = ({setAccion, cargarDatos}) => {
     const onSubmit = async (e)=>{
         e.preventDefault();
 
-        if(montoTotal.trim()===''||idContrato.toString().trim()===''||cuotasPagadas.trim()===''){
+        if(montoTotal.toString().trim()===''||idContrato.toString().trim()===''||idContrato.toString().trim()==='0'||cuotasPagadas.toString().trim()===''){
             setError(true);
             return
         }
@@ -40,7 +44,7 @@ const FormPagos = ({setAccion, cargarDatos}) => {
         let fecha = `${t.getFullYear()}-${t.getMonth()+1}-${t.getDate()}`
         
         await axios.post(`http://localhost:4000/v1/pago/request/`,{
-            montoTotal,
+            montoTotal:parseInt(montoTotal),
             idContrato:parseInt(idContrato),
             fechaPagoActual:fecha,
             cuotasPagadas: parseInt(cuotasPagadas)
@@ -54,7 +58,6 @@ const FormPagos = ({setAccion, cargarDatos}) => {
                 return
             }
             
-
             swal("Registrado!", "El asegurado fue registrado correctamente", "success");    
             setAccion(1);
             cargarDatos();
@@ -64,11 +67,43 @@ const FormPagos = ({setAccion, cargarDatos}) => {
 
         }); 
     }
-    const onchange = e => {
-        setPago({
-            ...pago,
-            [e.target.name]: e.target.value
+
+    const onchangeMonto = e =>{
+        setMontoTotal(e.target.value)
+    } 
+
+    const onchangeCuotasPagadas = e =>{
+        setCuotasPagadas(e.target.value);
+        
+        const nuevoMonto = montoPlan * parseInt(e.target.value)
+        setMontoTotal(nuevoMonto)
+        
+    }
+
+
+    const onchanges = async e => {
+        setIDContrato(e.target.value)
+
+        const contrato = await contratos.filter((contrato)=>{
+            return contrato.id.toString() === e.target.value.toString();
         })
+
+        if(contrato.length===0){
+            setMontoPlan(0)
+            setCuotasPagadas(1);
+            setMontoTotal(0)
+            return;
+        }
+        console.log(contrato[0]);
+
+        const plan = (parseInt(contrato[0].precioPlan) + ( parseInt(contrato[0].cantidadDependientes) * parseInt(contrato[0].precioPorDpte) ));
+        
+        setMontoTotal(plan)
+        setMontoPlan(plan)
+
+
+
+        
     }
     const closeForm = () => {
         setAccion(1);
@@ -85,11 +120,11 @@ const FormPagos = ({setAccion, cargarDatos}) => {
             <div className="row">
                 <div className="form-group col-6">
                     <label htmlFor="">Monto</label>
-                    <input type="number" className="form-control" min="0" name="montoTotal" value={montoTotal} onChange={onchange}/>  
+                    <input type="number" className="form-control" min="0" name="montoTotal" value={montoTotal} onChange={onchangeMonto} disabled/>  
                 </div>
                 <div className="form-group col-6">
                     <label htmlFor="">Contrato</label>
-                    <select className="form-control" name="idContrato" value={idContrato} onChange={onchange}>
+                    <select className="form-control" name="idContrato" value={idContrato} onChange={onchanges}>
                     <option value="0">Seleccione su contrato...</option>
                     {
                         contratos.map((contrato)=>{
@@ -102,7 +137,11 @@ const FormPagos = ({setAccion, cargarDatos}) => {
             <br />
             <div className="form-group col-6">
                 <label htmlFor="">Cuotas Pagadas</label>
-                <input type="number" className="form-control" min="1" name="cuotasPagadas" value={cuotasPagadas} onChange={onchange}/>  
+                {(idContrato=='0')
+                    ?<input type="number" className="form-control" min="1" name="cuotasPagadas" value={cuotasPagadas} onChange={onchangeCuotasPagadas} disabled />  
+                    :<input type="number" className="form-control" min="1" name="cuotasPagadas" value={cuotasPagadas} onChange={onchangeCuotasPagadas} />  
+                }
+                
             </div>
            <br />
         
@@ -110,7 +149,7 @@ const FormPagos = ({setAccion, cargarDatos}) => {
                 {
                     (error)
                     ? <Mensaje mensaje="Los campos deben ser llenados correctamente" tipo='danger' />
-                    :null
+                    : null
                 }
                 <button type="submit" className="btn btn-success">Registrar</button>
             </div>
